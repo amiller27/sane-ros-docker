@@ -1,0 +1,37 @@
+#!/bin/bash
+
+set -e
+
+function usage() {
+    cat <<-END
+Usage: ./run <melodic|kinetic|indigo>
+Run an interactive container with intel graphics (mesa)
+END
+}
+
+case "$1" in
+    indigo)
+        ROS_DISTRO=indigo
+        ;;
+    kinetic)
+        ROS_DISTRO=kinetic
+        ;;
+    melodic)
+        ROS_DISTRO=melodic
+        ;;
+    *)
+        usage
+        exit
+        ;;
+esac
+
+docker run -it \
+    --device=/dev/dri:/dev/dri \
+    --env="DISPLAY=$DISPLAY" \
+    --env="QT_X11_NO_MITSHM=1" \
+    --volume=/tmp/.X11-unix:/tmp/.X11-unix:rw \
+    --volume="$HOME/.Xauthority:$HOME/.Xuathority:rw" \
+    --volume="$HOME:/home/$USERNAME:rw" \
+    --network=host \
+    --privileged \
+    sane-$ROS_DISTRO:latest
