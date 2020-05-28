@@ -1,10 +1,10 @@
+ARG OS_VERSION
 ARG ROS_DISTRO
+FROM nvidia/opengl:1.0-glvnd-runtime-ubuntu${OS_VERSION} as opengl
+
 FROM osrf/ros:$ROS_DISTRO-desktop-full
 
-RUN apt-get update -qq && apt-get -y install \
-    libgl1-mesa-dri \
-    libgl1-mesa-glx \
-    && rm -rf /var/lib/apt/lists/*
+include(graphics-nvidia-M4_OS_VERSION)
 
 RUN env DEBIAN_FRONTEND=noninteractive \
     apt-get update -qq && apt-get -y install \
